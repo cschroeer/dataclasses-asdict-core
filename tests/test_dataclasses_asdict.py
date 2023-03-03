@@ -16,8 +16,6 @@ def test_dataclass_asdict():
 
     logging.debug(f"{parent_dict=}")
 
-    pass
-
 
 def test_dataclass_asdict_mapsqlalchemy():
     map_entities()
@@ -31,4 +29,24 @@ def test_dataclass_asdict_mapsqlalchemy():
 
     logging.debug(f"{parent_dict=}")
 
-    pass
+
+def test_dataclass_asdict_type():
+    map_entities()
+
+    childs = {"child1": DataclassChild("child1"), "child2": DataclassChild("child2")}
+
+    parent = DataclassParent("parent1")
+    parent.childs = childs
+
+    type(parent.childs)(((k), (v)) for k, v in parent.childs.items())
+
+
+def test_dataclass_asdict_dict():
+    map_entities()
+
+    childs = {"child1": DataclassChild("child1"), "child2": DataclassChild("child2")}
+
+    parent = DataclassParent("parent1")
+    parent.childs = childs
+
+    dict(((k), (v)) for k, v in parent.childs.items())
