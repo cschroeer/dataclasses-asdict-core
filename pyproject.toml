@@ -1,0 +1,70 @@
+
+[project]
+name =  "dataclasses-asdict-core"  # Required
+
+version = "0.0.1"  # Required
+
+description = "Package for record linkage, blocking, comparison, classification of matches"  # Optional
+
+readme = "README.md" # Optional
+
+requires-python = ">=3.10"
+
+keywords = ["sample", "setuptools", "development"]  # Optional
+
+authors = [
+  {name = "Datenschmiede.ai GmbH", email = "info@datenschmiede.ai" } # Optional
+]
+
+# master-data-entity-core not relative, but must be installed in the local venv 
+dependencies = [
+]
+
+# The following would provide a command line executable called `sample`
+# which executes the function `main` from this package when invoked.
+# [project.scripts]  # Optional
+# sample = "main:main"
+
+# Set paths for PyTest
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "src"
+]
+
+# logging config for pytest
+log_cli=1 # Enable application logging during pytest, set =0 for disabling
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s | %(levelname)8s | %(name)-55s | %(funcName)-24s | %(lineno)3s | %(message)s"
+log_cli_date_format="%Y-%m-%d %H:%M:%S"
+
+# for each appender (cli or file) own config is needed see https://docs.pytest.org/en/7.1.x/reference/reference.html#confval-log_cli
+# file will not be appended
+# if needed, remove comments
+#log_file = "./tests/pytest.log" # logging for 
+#log_file_level = "INFO"
+#log_file_format = "%(asctime)s | %(name)s | %(funcName)s | %(lineno)s | %(levelname)s | %(message)s"
+#log_file_date_format="%Y-%m-%d %H:%M:%S"
+
+# Enable Type Checking
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"
+reportMissingTypeArgument = "none"
+reportMissingTypeStubs = "none"
+reportUnknownArgumentType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownVariableType = "none"
+
+# This is configuration specific to the `setuptools` build backend.
+# If you are using a different build backend, you will need to change this.
+[tool.setuptools]
+# If there are data files included in your packages that need to be
+# installed, specify them here.
+#package-data = {"sample" = ["*.dat"]}
+
+[build-system]
+# These are the assumed default build requirements from pip:
+# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
