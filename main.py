@@ -1,12 +1,22 @@
-import logging
+from dataclasses import dataclass, field
+from uuid import UUID, uuid4
 
 from sqlalchemy import Column, ForeignKey, MetaData, String, Table, Uuid, inspection
 from sqlalchemy.orm import attribute_keyed_dict, registry, relationship
 
-from dataclasses_asdict.dataclass_child import DataclassChild
-from dataclasses_asdict.dataclass_parent import DataclassParent
 
-LOGGER = logging.getLogger(__name__)
+@dataclass
+class DataclassChild:
+    id: UUID = field(default_factory=uuid4, init=False)
+    name: str
+
+
+@dataclass
+class DataclassParent:
+    id: UUID = field(default_factory=uuid4, init=False)
+    name: str
+
+    childs: dict[str, DataclassChild] = field(default_factory=dict, init=False)
 
 
 def map_entities(schema_name: str = "dataclasses_asdict") -> registry:
@@ -24,7 +34,7 @@ def map_entities(schema_name: str = "dataclasses_asdict") -> registry:
     mapper_registry: registry = registry(metadata=metadata)
 
     if not inspection.inspect(DataclassParent, False):
-        LOGGER.debug("Map entity DataclassParent")
+        print("Map entity DataclassParent")
         dataclass_parent_table: Table = Table(
             "dataclass_parent",
             mapper_registry.metadata,
@@ -43,10 +53,10 @@ def map_entities(schema_name: str = "dataclasses_asdict") -> registry:
             },
         )
     else:
-        LOGGER.debug("Entity DataclassParent is already mapped")
+        print("Entity DataclassParent is already mapped")
 
     if not inspection.inspect(DataclassChild, False):
-        LOGGER.debug("Map entity DataclassChild")
+        print("Map entity DataclassChild")
         dataclass_child_table: Table = Table(
             "dataclass_child",
             mapper_registry.metadata,
@@ -62,3 +72,36 @@ def map_entities(schema_name: str = "dataclasses_asdict") -> registry:
         mapper_registry.map_imperatively(DataclassChild, dataclass_child_table)
 
     return mapper_registry
+
+
+def create_parent():
+    childs = {"child1": DataclassChild("child1"), "child2": DataclassChild("child2")}
+
+    parent = DataclassParent("parent1")
+    parent.childs = childs
+
+    return parent
+
+
+def test_dict(parent: DataclassParent):
+    test_dict = dict(((k), (v)) for k, v in parent.childs.items())
+
+    print(f"{test_dict=}")
+
+
+def test_type(parent: DataclassParent):
+    test_type = type(parent.childs)(((k), (v)) for k, v in parent.childs.items())
+
+    print(f"{test_type=}")
+
+
+# testing functions WITHOUT mapping
+test_dict(create_parent())  # => works
+test_type(create_parent())  # => works
+
+# testing functions WITH mapping
+map_entities()
+test_dict(create_parent())  # => works
+test_type(
+    create_parent()
+)  # => does not work TypeError: _mapped_collection_cls.<locals>._MKeyfuncMapped.__init__() takes 1 positional argument but 2 were given
