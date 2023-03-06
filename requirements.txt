@@ -1,2 +1,2 @@
 pytest
-sqlalchemy
+sqlalchemy>=2.0.5.post1

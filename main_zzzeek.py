@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from dataclasses import field
+from dataclasses import asdict
 
 from uuid import UUID
 from uuid import uuid4
@@ -74,10 +75,17 @@ childs = {"child1": DataclassChild("child1"), "child2": DataclassChild("child2")
 parent = DataclassParent("parent1")
 parent.childs = childs
 
+# new compard to previous
 
-test_dict = dict(((k), (v)) for k, v in parent.childs.items()) # => works
-test_type = type(parent.childs)(((k), (v)) for k, v in parent.childs.items()) # => error
+asdict(parent)
+
 #Traceback (most recent call last):
-#  File "/home/cschroeer/python-projects/dataclasses-asdict-core/main_zzzeek.py", line 81, in <module>
-#    test_type = type(parent.childs)(((k), (v)) for k, v in parent.childs.items())
+#  File "/home/cschroeer/python-projects/dataclasses-asdict-core/main_zzzeek.py", line 78, in <module>
+#    asdict(parent)
+#  File "/usr/local/lib/python3.10/dataclasses.py", line 1238, in asdict
+#    return _asdict_inner(obj, dict_factory)
+#  File "/usr/local/lib/python3.10/dataclasses.py", line 1245, in _asdict_inner
+#    value = _asdict_inner(getattr(obj, f.name), dict_factory)
+#  File "/usr/local/lib/python3.10/dataclasses.py", line 1275, in _asdict_inner
+#    return type(obj)((_asdict_inner(k, dict_factory),
 #TypeError: _mapped_collection_cls.<locals>._MKeyfuncMapped.__init__() takes 1 positional argument but 2 were given
